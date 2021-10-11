@@ -1,0 +1,215 @@
+// static的引入
+package com.wsc.static_;
+
+public class ChildGame {
+    public static void main(String[] args) {
+
+        Child child1 = new Child("白骨精");
+        child1.join();
+        child1.count++;
+        Child child2 = new Child("狐狸精");
+        child2.join();
+        child2.count++;
+        Child child3 = new Child("猫猫精");
+        child3.join();
+        child3.count++;
+        System.out.println("共有" + child1.count + "个小孩加入了游戏.....");
+        System.out.println("共有" + child2.count + "个小孩加入了游戏.....");
+        System.out.println("共有" + child3.count + "个小孩加入了游戏.....");
+        System.out.println("共有" + Child.count + "个小孩加入了游戏.....");
+    }
+}
+class Child{
+    public static int count = 0;
+    private String name;
+
+    public void join(){
+        System.out.println(name+"加入了游戏...");
+    }
+    public Child(String name) {
+        this.name = name;
+    }
+}
+
+
+// static练习
+package com.wsc.static_;
+public class static_exercise01 {
+    public static void main(String[] args) {
+        System.out.println("Number of total is " +Person.getTotalPerson()); //0
+        Person p1 = new Person();
+        System.out.println( "Number of total is "+ Person.getTotalPerson()); //1
+    }
+}
+class Person { //StaticExercise02.java 
+    private int id;
+    private static int total = 0;
+    public static int getTotalPerson() {
+        //id++;//错误, 注销
+        return total;
+    }
+    public Person() {//构造器
+        total++; //total = 1
+        id = total;//id = 1
+    }
+}
+
+package com.wsc.static_;
+class Person1 { //
+        private int id;
+        private static int total = 0;
+        public static void setTotalPerson(int total){
+            // this.total = total;//错误，因为在 static 方法中，不可以使用 this 关键字
+            Person1.total = total;// total=3
+        }
+        public Person1() {//构造器
+            total++;
+            id = total;
+        }
+        public static void print(){
+            System.out.println("total的值为 "+total);// 4
+        }
+}
+public class static_exercise02 {
+    public static void main(String[] args) {
+        Person1.setTotalPerson(3);
+        new Person1();
+        Person1.print();//最后 total 的值就是 4
+    }
+}
+
+
+
+// 代码块的引入
+package com.codeblock;
+
+public class CodeBlock01 {
+    public static void main(String[] args) {
+        new Movie("唐探3");
+        new Movie("唐探3",56);
+        new Movie("唐探3",56,"tom");
+    }
+}
+class Movie{
+    private String name;
+    private double price;
+    private String director;
+
+    // 构造器
+    public Movie(String name) {
+        System.out.println("Movie(String name)被调用");
+        this.name = name;
+    }
+
+    public Movie(String name, double price) {
+        System.out.println("Movie(String name, double price)被调用");
+        this.name = name;
+        this.price = price;
+    }
+    public Movie(String name, double price, String director) {
+        System.out.println("Movie(String name, double price, String director)被调用");
+        this.name = name;
+        this.price = price;
+        this.director = director;
+    }
+    // 当不管调用哪个构造器时，都会先调用代码块  ，所以将共同的部分写入代码块
+//    {
+//        System.out.println("电影屏幕打开...");
+//        System.out.println("广告开始...");
+//        System.out.println("电影开始播放...");
+//    }
+}
+
+// 代码块的细节以及静态代码块
+package com.codeblock;
+public class CodeBlock_detail_01 {
+    public static void main(String[] args) {
+        // 静态代码块在类加载时执行，并且只会执行一次
+        // 类在什么时候被加载
+        // 1.创建对象实例（new）
+        //AA aa = new AA();
+        //AA aa1 = new AA();
+        //只执行一次静态代码块
+
+        // 2.创建子类对象实例时，父类也会被加载
+        //AA aa = new AA();
+
+        // 3.使用静态成员时
+        System.out.println(Cat.age);
+
+        // 普通代码块在创建对象时执行
+        System.out.println(DD.age);
+        // 类加载 ----> 调用静态代码块
+        // 没有创建对象 ----> 不调用普通代码块
+    }
+}
+class DD{
+    public static int age = 34;
+    static {
+        System.out.println("DD的静态代码块被执行......");
+    }
+    {
+        System.out.println("DD的普通代码块被执行......");
+    }
+}
+class Cat{
+    public static int age = 999;
+    static {
+        System.out.println("Cat的静态代码块被执行......");
+    }
+}
+class AA extends BB{
+
+    // 静态代码块=====在类加载时执行
+     static {
+        System.out.println("AA的静态代码块被执行......");
+    }
+}
+class BB{
+     static {
+        System.out.println("BB的静态代码块被执行......");
+    }
+}
+
+
+// main方法的细节
+package com.main;
+public class Main_01 {
+
+    //静态变量
+    private static String name = "jack";
+    //静态方法
+    public static void hi(){
+        System.out.println("Main_01的hi方法");
+    }
+
+    //非静态变量
+    public int n1 = 10;
+    //非静态方法
+    public void cry(){
+        System.out.println("Main_01的cry方法");
+    }
+
+    public static void main(String[] args) {
+        //可以直接使用 name
+        //1. 静态方法 main 可以访问本类的静态成员
+        System.out.println("name = "+name);
+        hi();
+        //2. 静态方法 main 不可以访问非静态成员变量
+        //System.out.println("n1 = "+n1);// 错
+        //cry();// 错
+        //3. 静态方法 main 要访问本类的非静态成员，需要先创建对象，再调用
+        Main_01 main_01 = new Main_01();
+        System.out.println("n1 = "+main_01.n1);
+        main_01.cry();
+    }
+}
+
+package com.main;
+public class Main_02 {
+    public static void main(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            System.out.println("第"+(i+1)+"个参数为 "+args[i]);
+        }
+    }
+}
